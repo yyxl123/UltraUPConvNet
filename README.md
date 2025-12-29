@@ -85,62 +85,67 @@ Your final `data` directory structure should look similar to this:
 
 ### 4. Download Pre-trained Weights (Optional)
 
-To get started quickly or if you want to **skip the training step** and jump directly to inference, you can use our provided baseline weights.
+To get started quickly or if you want to download ConvNeXt weight, you can follow:
 
-1.  **Download Model Weights**: Go to our official [**GitHub Releases page**](https://github.com/uusic2025/challenge/releases/latest) and download the `baseline.pth` file.
-2.  **Prepare Experiment Directory**: Create a directory for your experiment output: `mkdir -p exp_out/trial_1`.
-3.  **Place and Rename Weights**: Move the downloaded `baseline.pth` file into this folder and **rename it to `best_model.pth`**. The testing script `omni_test.py` is configured to load the model from `exp_out/trial_1/best_model.pth`.
-4.  **(Recommended) Prepare Backbone Checkpoint**: The code may try to load a pre-trained Swin Transformer backbone. To prevent potential errors during initialization, create a `pretrained_ckpt` folder in the project root and place the `swin_tiny_patch4_window7_224.pth` file inside it. You can download this from the official Swin Transformer repository. This step is only for initializing the encoder's weights and is separate from loading our fine-tuned `best_model.pth`.
+1.  **Download Model Weights**: Go to the official [**GitHub Releases page**](https://github.com/facebookresearch/ConvNeXt) and download the `ConvNeXt-T 224*224` file.
+2.  **Prepare Experiment Directory**: Create a directory for your experiment output: `mkdir pretrained_ckpt`.
+3.  **Place and Rename Weights**: Move the downloaded `*.pth` file into this folder.
 
-Now you can proceed directly to the [Inference and Evaluation](#-inference-and-evaluation) section using this model.
 
 ## 🏋️‍♀️ Model Training
 
-The training process is handled by `omni_train.py`, which leverages `omni_trainer.py`. It uses a sophisticated weighted sampler to balance learning between different datasets and tasks (segmentation and classification).
+The training process is handled by `train.py`, which leverages `trainer.py`. It uses a sophisticated weighted sampler to balance learning between different datasets and tasks (segmentation and classification).
 
 To start training, run the provided shell script:
 
 ```bash
-bash baseline.sh
+bash train.sh
 ```
 
 Alternatively, you can run the command directly. For multi-GPU training (e.g., 2 GPUs):
 
 ```bash
-python -m torch.distributed.launch \
-    --use_env \
-    --nproc_per_node=2 \
-    --master_port=12345 \
-    omni_train.py \
-    --output_dir=exp_out/trial_1 \
-    --prompt \
-    --base_lr=0.003 \
-    --batch_size=32 \
-    --max_epochs=200
+python train.py --output_dir=exp_out/prompt \
+                --prompt \
+                --base_lr=3e-5 \
+                --use_pretrained \
+                --pretrained_path=./pretrained_ckpt/convnext_tiny_22k_1k_224.pth \
+                --batch_size=16
+
 ```
 
 **Key Arguments**:
 - `--output_dir`: Directory to save logs, checkpoints, and validation results.
 - `--prompt`: Enables the prompt-based learning mechanism.
-- `--batch_size`: Total batch size across all GPUs.
+- `--batch_size`: batch size.
 - `--max_epochs`: Total number of training epochs.
-- `--pretrain_ckpt`: Path to a pretrained Swin Transformer checkpoint (`.pth`) to initialize the encoder. The baseline will automatically load from `pretrained_ckpt/swin_tiny_patch4_window7_224.pth`.
+- `--pretrain_ckpt`: Path to a pretrained ConvNeXt checkpoint (`.pth`) to initialize the encoder. The baseline will automatically load from `pretrained_ckpt/convnext_tiny_22k_1k_224.pth`.
 
-Checkpoints and logs will be saved in the specified `--output_dir`. The best-performing model on the validation set will be saved as `best_model.pth`.
+Checkpoints and logs will be saved in the specified `--output_dir`.
 
 ## 🧪 Inference and Evaluation
 
-After training, you can evaluate your model on the test sets using `omni_test.py`.
+After training, you can evaluate your model on the test sets using `test.py`.
 
 To run evaluation on a single GPU:
 
 ```bash
-python -m torch.distributed.launch \
-    --use_env \
-    --nproc_per_node=1 \
-    --master_port=12345 \
-    omni_test.py \
-    --output_dir=exp_out/trial_1 \
-    --prompt \
-    --is_saveout
+python  test.py     --output_dir=exp_out/prompt     --prompt     --is_saveout
+```
+
+## ©️ Citation
+
+If you use this baseline or find our work helpful, please consider citing:
+
+```bibtex
+@misc{chen2025ultraupconvnetupernetconvnextbasedmultitask,
+      title={UltraUPConvNet: A UPerNet- and ConvNeXt-Based Multi-Task Network for Ultrasound Tissue Segmentation and Disease Prediction}, 
+      author={Zhi Chen and Le Zhang},
+      year={2025},
+      eprint={2509.11108},
+      archivePrefix={arXiv},
+      primaryClass={eess.IV},
+      url={https://arxiv.org/abs/2509.11108}, 
+}
+# Please also add a citation for the UUSIC25 challenge paper once it is available.
 ```
