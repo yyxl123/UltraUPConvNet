@@ -87,7 +87,7 @@ Your final `data` directory structure should look similar to this:
 
 To get started quickly or if you want to download ConvNeXt weight, you can follow:
 
-1.  **Download Model Weights**: Go to the official [**GitHub Releases page**](https://github.com/facebookresearch/ConvNeXt) and download the `ConvNeXt-T 224*224` file.
+1.  **Download Model Weights**: Go to the official [**GitHub page**](https://github.com/facebookresearch/ConvNeXt) and download the `ConvNeXt-T 224*224` file.
 2.  **Prepare Experiment Directory**: Create a directory for your experiment output: `mkdir pretrained_ckpt`.
 3.  **Place and Rename Weights**: Move the downloaded `*.pth` file into this folder.
 
