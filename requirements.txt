@@ -1,0 +1,12 @@
+einops
+MedPy
+numpy
+opencv-python
+PyYAML
+scikit_learn
+scipy
+timm
+torch
+torchvision
+tqdm
+yacs
