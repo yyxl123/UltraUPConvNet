@@ -102,7 +102,7 @@ To start training, run the provided shell script:
 bash train.sh
 ```
 
-Alternatively, you can run the command directly. For multi-GPU training (e.g., 2 GPUs):
+Alternatively, you can run the command directly.
 
 ```bash
 python train.py --output_dir=exp_out/prompt \
