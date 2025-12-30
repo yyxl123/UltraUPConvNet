@@ -147,5 +147,4 @@ If you use this baseline or find our work helpful, please consider citing:
       primaryClass={eess.IV},
       url={https://arxiv.org/abs/2509.11108}, 
 }
-# Please also add a citation for the UUSIC25 challenge paper once it is available.
 ```
